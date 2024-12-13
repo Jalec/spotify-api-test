@@ -1,6 +1,6 @@
 import React from "react";
 
-function Default() {
+const Default: React.FC = () => {
   return (
     <>
       <div>
@@ -8,6 +8,6 @@ function Default() {
       </div>
     </>
   );
-}
+};
 
 export default Default;

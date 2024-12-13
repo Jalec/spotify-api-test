@@ -3,7 +3,7 @@ import { redirectToSpotifyAuth } from "../utils/spotifyUtil";
 import { useUserDataStore } from "../store/userData";
 import { useNavigate } from "react-router-dom";
 
-function Navbar() {
+const Navbar: React.FC = () => {
   const userData = useUserDataStore((state) => state.userData);
   const navigate = useNavigate();
   const goHome = () => {
@@ -19,7 +19,7 @@ function Navbar() {
       </section>
       <section>
         {userData.userImages[0].url ? (
-          <button className="bg-black p-2 rounded-3xl flex justify-center items-center gap-3 pr-3">
+          <button className="bg-black rounded-full flex justify-center items-center gap-3 px-5 py-2">
             <img
               className="w-8 rounded-full"
               src={userData.userImages[1].url}
@@ -28,15 +28,15 @@ function Navbar() {
           </button>
         ) : (
           <button
-            className="bg-yellow-400 p-2 rounded-3xl"
             onClick={redirectToSpotifyAuth}
+            className="px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 font-semibold"
           >
-            <h2>LOGIN TO SPOTIFY</h2>
+            Connect with Spotify
           </button>
         )}
       </section>
     </div>
   );
-}
+};
 
 export default Navbar;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTopTracks, redirectToSpotifyAuth } from "../utils/spotifyUtil";
 
-function TopTracks() {
+const TopTracks: React.FC = () => {
   const [topTracks, setTopTracks] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,6 +38,6 @@ function TopTracks() {
       </ul>
     </div>
   );
-}
+};
 
 export default TopTracks;

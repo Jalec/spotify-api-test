@@ -9,3 +9,9 @@ export interface UserData {
   userID: string;
   userImages: UserImage[];
 }
+
+// Interface for the structure of a Bingo's song
+export interface BingoSong {
+  song: string;
+  marked: boolean;
+}

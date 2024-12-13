@@ -3,7 +3,7 @@ import { getAccessToken } from "../utils/spotifyUtil";
 import { useUserDataStore } from "../store/userData";
 import { useNavigate } from "react-router-dom";
 
-function Callback() {
+const Callback: React.FC = () => {
   const navigate = useNavigate();
   const fetchUserData = useUserDataStore((state) => state.fetchUserData);
   const userData = useUserDataStore((state) => state.userData);
@@ -24,6 +24,6 @@ function Callback() {
   }
 
   return <p>Authorizing...</p>;
-}
+};
 
 export default Callback;

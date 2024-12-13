@@ -1,9 +1,7 @@
-import React, { useEffect } from "react";
-import { useUserDataStore } from "../store/userData";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function ContentSelector() {
-  const userData = useUserDataStore((state) => state.userData);
+const ContentSelector: React.FC = () => {
   const navigate = useNavigate();
 
   const goToTopTracks = () => {
@@ -13,6 +11,11 @@ function ContentSelector() {
   const goToPlayer = () => {
     navigate("/player");
   };
+
+  const goToBingo = () => {
+    navigate("/bingo");
+  };
+
   return (
     <div className="flex justify-evenly items-center gap-3">
       <button
@@ -23,9 +26,9 @@ function ContentSelector() {
       </button>
       <button
         className="rounded-3xl bg-black text-white p-2"
-        onClick={goToTopTracks}
+        onClick={goToBingo}
       >
-        See my playlists
+        BINGO
       </button>
       <button
         className="rounded-3xl bg-black text-white p-2"
@@ -41,6 +44,6 @@ function ContentSelector() {
       </button>
     </div>
   );
-}
+};
 
 export default ContentSelector;

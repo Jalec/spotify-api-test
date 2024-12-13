@@ -7,6 +7,7 @@ import Default from "./pages/Default";
 import TopTracks from "./pages/TopTracks";
 import ContentSelector from "./pages/ContentSelector";
 import Player from "./pages/Player";
+import { Bingo } from "./pages/Bingo";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/callback" element={<Callback />} />
             <Route path="/toptracks" element={<TopTracks />} />
             <Route path="/player" element={<Player />} />
+            <Route path="/bingo" element={<Bingo />} />
           </Routes>
         </div>
       </Router>
