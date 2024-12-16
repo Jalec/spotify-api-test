@@ -21,7 +21,8 @@ export const usePlaylist = (playlistID: string): PlaylistReturn => {
           marked: false,
         };
       });
-      setPlaylist(playlistSongs);
+
+      setPlaylist(playlistSongs.sort(() => Math.random() - 0.5));
     };
     fetchPlaylist();
   }, [playlistID]);
