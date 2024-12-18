@@ -35,6 +35,8 @@ export const useUserDataStore = create<State>((set) => {
         };
         set({ userData: userData });
       } catch (error) {
+        console.log("Testing testing");
+
         console.log("Failed to fetch user data:", error);
       }
     },

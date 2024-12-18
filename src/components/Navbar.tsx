@@ -5,9 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const userData = useUserDataStore((state) => state.userData);
+  const fetchUserData = useUserDataStore((state) => state.fetchUserData);
   const navigate = useNavigate();
   const goHome = () => {
     navigate("/content");
+  };
+
+  const logIn = async () => {
+    redirectToSpotifyAuth();
   };
 
   return (
@@ -28,7 +33,7 @@ const Navbar: React.FC = () => {
           </button>
         ) : (
           <button
-            onClick={redirectToSpotifyAuth}
+            onClick={logIn}
             className="px-6 py-3 bg-green-500 text-white rounded-full hover:bg-green-600 font-semibold"
           >
             Connect with Spotify

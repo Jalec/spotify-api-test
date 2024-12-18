@@ -3,35 +3,10 @@ const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
 const redirectUri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
 const scopes = import.meta.env.VITE_SPOTIFY_SCOPES;
 
-export function redirectToSpotifyAuth() {
-  window.location.href = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(
-    scopes
-  )}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-}
+const API_URL = "http://localhost:5000";
 
-export async function getAccessToken(code: string) {
-  const response = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: "Basic " + btoa(`${clientId}:${clientSecret}`),
-    },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      code,
-      redirect_uri: redirectUri,
-    }),
-  });
-  const data = await response.json();
-  if (data.access_token) {
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-    return true;
-  } else {
-    return false;
-  }
-  //   localStorage.setItem("access_token", data.access_token);
-  //   localStorage.setItem("refresh_token", data.refresh_token);
+export function redirectToSpotifyAuth() {
+  window.location.href = `${API_URL}/login`;
 }
 
 async function fetchWebApi(
@@ -58,22 +33,27 @@ async function fetchWebApi(
 }
 
 export async function getCurrentUserProfile() {
-  const token = localStorage.getItem("access_token");
-  const response = await fetch("https://api.spotify.com/v1/me", {
+  //const token = localStorage.getItem("access_token");
+  const response = await fetch(`${API_URL}/api/me`, {
+    method: "GET",
+    credentials: "include",
     headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
   const data = await response.json();
-
   return data;
 }
 
 // Services
 // Get you top 5 trcks
 export async function getTopTracks() {
-  return fetchWebApi("me/top/tracks?limit=5", "GET");
+  //return fetchWebApi("me/top/tracks?limit=5", "GET");
+  const response = await fetch(`${API_URL}/api/me/top/tracks?limit=5`, {
+    credentials: "include", // Ensures cookies are sent with the request.
+  });
+  const data = await response.json();
+  console.log(data);
 }
 
 // Get track information
