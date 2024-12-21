@@ -4,6 +4,8 @@ import { getCurrentUserProfile } from "../utils/spotifyUtil";
 
 interface State {
   userData: UserData;
+  isAuthenticated: boolean;
+  loading: boolean;
   fetchUserData: () => Promise<void>;
 }
 
@@ -12,31 +14,26 @@ export const useUserDataStore = create<State>((set) => {
     userData: {
       userName: "",
       userID: "",
-      userImages: [
-        {
-          height: 0,
-          url: "",
-          width: 0,
-        },
-        {
-          height: 0,
-          url: "",
-          width: 0,
-        },
-      ],
+      userImages: [],
     },
+    isAuthenticated: false,
+    loading: true,
     fetchUserData: async () => {
       try {
-        const profile = await getCurrentUserProfile();
-        const userData: UserData = {
-          userName: profile.display_name,
-          userID: profile.id,
-          userImages: [profile.images[0], profile.images[1]],
-        };
-        set({ userData: userData });
+        const response = await getCurrentUserProfile();
+        if (response.ok) {
+          const profile = await response.json();
+          const userData: UserData = {
+            userName: profile.display_name,
+            userID: profile.id,
+            userImages: [profile.images[0], profile.images[1]],
+          };
+          set({ userData: userData, isAuthenticated: true, loading: false });
+        } else {
+          set({ isAuthenticated: false, loading: false });
+        }
       } catch (error) {
-        console.log("Testing testing");
-
+        set({ isAuthenticated: false, loading: false });
         console.log("Failed to fetch user data:", error);
       }
     },

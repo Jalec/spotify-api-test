@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const userData = useUserDataStore((state) => state.userData);
+  const isAuthenticated = useUserDataStore((state) => state.isAuthenticated);
   const fetchUserData = useUserDataStore((state) => state.fetchUserData);
   const navigate = useNavigate();
   const goHome = () => {
@@ -23,7 +24,7 @@ const Navbar: React.FC = () => {
         </button>
       </section>
       <section>
-        {userData.userImages[0].url ? (
+        {isAuthenticated ? (
           <button className="bg-black rounded-full flex justify-center items-center gap-3 px-5 py-2">
             <img
               className="w-8 rounded-full"

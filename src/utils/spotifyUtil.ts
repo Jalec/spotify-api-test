@@ -33,7 +33,6 @@ async function fetchWebApi(
 }
 
 export async function getCurrentUserProfile() {
-  //const token = localStorage.getItem("access_token");
   const response = await fetch(`${API_URL}/api/me`, {
     method: "GET",
     credentials: "include",
@@ -41,8 +40,8 @@ export async function getCurrentUserProfile() {
       "Content-Type": "application/json",
     },
   });
-  const data = await response.json();
-  return data;
+
+  return response;
 }
 
 // Services
