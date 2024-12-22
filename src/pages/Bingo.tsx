@@ -1,32 +1,90 @@
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, stagger, useAnimate } from "framer-motion";
 import { BingoSong } from "../types";
 import { usePlaylist } from "../hooks/usePlaylist";
-import { useState, useEffect } from "react";
+import { BingoTile } from "../components/BingoComponents/BingoTile";
+import { BingoControls } from "../components/BingoComponents/BingoControls";
 
-const playlistID = "3aviIfdgBAwUeZ4cDdQ0zK";
+const PLAYLIST_ID = "65PmVD0KzAxpAp2u89zGuR";
+const BOARD_SIZE = 25;
+const GRID_SIZE = 5;
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 1,
+      when: "beforeChildren",
+    },
+  },
+};
+
+const generateRandomBoard = (
+  playlist: BingoSong[],
+  count: number = BOARD_SIZE
+): BingoSong[] => {
+  const tempPlaylist = [...playlist];
+  const selectedSongs: BingoSong[] = [];
+
+  while (selectedSongs.length < count && tempPlaylist.length > 0) {
+    const randomIndex = Math.floor(Math.random() * tempPlaylist.length);
+    const [song] = tempPlaylist.splice(randomIndex, 1);
+    selectedSongs.push(song);
+  }
+
+  return selectedSongs;
+};
 
 export const Bingo = () => {
-  const { playlist, markSong } = usePlaylist(playlistID);
+  const { playlist, markSong } = usePlaylist(PLAYLIST_ID);
+  const [board, setBoard] = useState<BingoSong[]>([]);
+
+  useEffect(() => {
+    if (playlist && board.length === 0) {
+      setBoard(generateRandomBoard(playlist));
+    }
+  }, [playlist]);
+
+  const handleTileClick = (index: number) => {
+    markSong(index);
+    setBoard((prevBoard) =>
+      prevBoard.map((song, i) =>
+        i === index ? { ...song, marked: !song.marked } : song
+      )
+    );
+  };
+
+  if (!playlist) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-gray-500">Building Bingo Cardboard...</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <ul className="flex gap-10 justify-center flex-wrap">
-        {playlist &&
-          playlist.map((track: BingoSong, index: number) => (
-            <motion.li
-              key={index}
-              className={`flex justify-center items-center w-32 h-32 rounded-xl border opacity-0 p-8 hover:cursor-pointer ${
-                track.marked ? "bg-black text-white" : ""
-              }`}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              onClick={() => markSong(index)}
-            >
-              {track.song}
-            </motion.li>
+    <div className="flex-1 flex gap-4 ">
+      <main className="flex-1 flex p-8 justify-center">
+        <motion.ul
+          className={`grid w-3/4 grid-cols-${GRID_SIZE} gap-4 place-items-center`}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {board.map((track: BingoSong, index: number) => (
+            <BingoTile
+              key={`${track.song}-${index}`}
+              song={track.song}
+              marked={track.marked}
+              onClick={() => handleTileClick(index)}
+            />
           ))}
-      </ul>
+        </motion.ul>
+      </main>
+      <BingoControls />
     </div>
   );
 };
+
+export default Bingo;

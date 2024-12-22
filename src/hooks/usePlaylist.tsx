@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { BingoSong } from "../types";
 import { getPlaylistTracks } from "../utils/spotifyUtil";
-import { animate, stagger } from "motion";
 
 interface PlaylistReturn {
   playlist: null | BingoSong[];
@@ -10,7 +9,6 @@ interface PlaylistReturn {
 
 export const usePlaylist = (playlistID: string): PlaylistReturn => {
   const [playlist, setPlaylist] = useState<null | BingoSong[]>(null);
-  const [isInitialLoad, setIsInitalLoad] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPlaylist = async () => {
@@ -26,13 +24,6 @@ export const usePlaylist = (playlistID: string): PlaylistReturn => {
     };
     fetchPlaylist();
   }, [playlistID]);
-
-  useEffect(() => {
-    if (playlist && isInitialLoad) {
-      animate("li", { opacity: 1, y: [50, 0] }, { delay: stagger(0.05) });
-      setIsInitalLoad(false);
-    }
-  }, [playlist, isInitialLoad]);
 
   const markSong = (index: number) => {
     setPlaylist((prevPlaylist) => {

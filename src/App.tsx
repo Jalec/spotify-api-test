@@ -21,14 +21,13 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar />
-        <div className="flex justify-center items-center p-10">
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
           <Routes>
             <Route path="/" element={<Default />} />
             <Route path="/callback" element={<Callback />} />
             <Route element={<ProtectedRoutes />}>
               <Route path="/content" element={<ContentSelector />} />
-              <Route path="/toptracks" element={<TopTracks />} />
               <Route path="/player" element={<Player />} />
               <Route path="/bingo" element={<Bingo />} />
             </Route>

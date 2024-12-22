@@ -4,10 +4,6 @@ import { useNavigate } from "react-router-dom";
 const ContentSelector: React.FC = () => {
   const navigate = useNavigate();
 
-  const goToTopTracks = () => {
-    navigate("/toptracks");
-  };
-
   const goToPlayer = () => {
     navigate("/player");
   };
@@ -17,32 +13,22 @@ const ContentSelector: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-evenly items-center gap-3">
-      <button
-        className="rounded-3xl bg-black text-white p-2"
-        onClick={goToTopTracks}
-      >
-        Go to Top 5 Tracks
-      </button>
-      <button
-        className="rounded-3xl bg-black text-white p-2"
-        onClick={goToBingo}
-      >
-        BINGO
-      </button>
-      <button
-        className="rounded-3xl bg-black text-white p-2"
-        onClick={goToPlayer}
-      >
-        Music Player
-      </button>
-      <button
-        className="rounded-3xl bg-black text-white p-2"
-        onClick={goToTopTracks}
-      >
-        Go to Top 5 Tracks
-      </button>
-    </div>
+    <main className="flex-1 flex items-center justify-center">
+      <div className="flex gap-3">
+        <button
+          className="rounded-xl bg-black text-white p-2"
+          onClick={goToBingo}
+        >
+          Singleplayer
+        </button>
+        <button
+          className="rounded-xl bg-black text-white p-2"
+          onClick={goToPlayer}
+        >
+          Multiplayer (Music player)
+        </button>
+      </div>
+    </main>
   );
 };
 

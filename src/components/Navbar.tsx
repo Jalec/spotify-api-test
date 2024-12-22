@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="flex p-4 justify-between bg-gray-200">
+    <div className="flex p-4 justify-between border">
       <section>
         <button onClick={goHome}>
           <h1 className="flex p-0 m-0 items-center text-2xl">MUSICAL BINGO</h1>
