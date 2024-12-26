@@ -67,7 +67,7 @@ export const Bingo = () => {
     <div className="flex-1 flex gap-4 ">
       <main className="flex-1 flex p-8 justify-center">
         <motion.ul
-          className={`grid w-3/4 grid-cols-${GRID_SIZE} gap-4 place-items-center`}
+          className={`grid w-3/4 grid-cols-5 gap-4 place-items-center`}
           variants={containerVariants}
           initial="hidden"
           animate="visible"

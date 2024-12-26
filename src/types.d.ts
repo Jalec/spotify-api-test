@@ -14,4 +14,5 @@ export interface UserData {
 export interface BingoSong {
   song: string;
   marked: boolean;
+  trackUri: string;
 }

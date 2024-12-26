@@ -7,11 +7,22 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import {
+  getToken,
+  playTrack,
+  transferPlaybackToDevice,
+} from "../utils/playerUtils";
+import { usePlaylist } from "../hooks/usePlaylist";
+
+const PLAYLIST_ID = "65PmVD0KzAxpAp2u89zGuR";
 
 const Player: React.FC = () => {
   const [player, setPlayer] = useState(undefined);
   const [isPaused, setIsPaused] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
+
+  const { playlist } = usePlaylist(PLAYLIST_ID);
+
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://sdk.scdn.co/spotify-player.js";
@@ -22,14 +33,21 @@ const Player: React.FC = () => {
     window.onSpotifyWebPlaybackSDKReady = () => {
       const spotifyPlayer = new window.Spotify.Player({
         name: "Jordi Music Player",
-        getOAuthToken: (cb) => {
-          cb(localStorage.getItem("access_token"));
+        getOAuthToken: async (cb) => {
+          try {
+            const token = await getToken();
+            console.log(token);
+            if (!token) throw new Error("Token not found in cookies");
+            cb(token.token);
+          } catch (error) {
+            console.error("Error retrieving Spotify token:", error);
+          }
         },
         volume: 0.5,
       });
 
-      spotifyPlayer.addListener("ready", ({ device_id }) => {
-        transferPlaybackToDevice(device_id);
+      spotifyPlayer.addListener("ready", async ({ device_id }) => {
+        await transferPlaybackToDevice(device_id);
       });
 
       // First connect the player
@@ -45,32 +63,25 @@ const Player: React.FC = () => {
         setCurrentTrack(state.track_window.current_track);
         setIsPaused(state.paused);
       });
+
       setPlayer(spotifyPlayer);
 
+      // Cleanup
       return () => {
-        if (player) {
-          player.disconnect();
+        if (spotifyPlayer) {
+          spotifyPlayer.disconnect();
         }
       };
     };
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
-  const transferPlaybackToDevice = async (device_id: string) => {
-    const token = localStorage.getItem("access_token");
-    try {
-      await fetch("https://api.spotify.com/v1/me/player", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          device_ids: [device_id],
-          play: true,
-        }),
-      });
-    } catch (error) {
-      console.error("Failed to transfer playback", error);
+  const playSong = () => {
+    if (playlist) {
+      playTrack(playlist[0].trackUri);
     }
   };
 
@@ -110,6 +121,14 @@ const Player: React.FC = () => {
                 disabled={!currentTrack}
               >
                 <SkipForward className="h-6 w-6" />
+              </button>
+            </div>
+            <div>
+              <button
+                className="bg-black text-white rounded"
+                onClick={playSong}
+              >
+                PLAY SONG!
               </button>
             </div>
           </div>

@@ -17,6 +17,7 @@ export const usePlaylist = (playlistID: string): PlaylistReturn => {
         return {
           song: track.track.name,
           marked: false,
+          trackUri: track.track.uri,
         };
       });
 
