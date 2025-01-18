@@ -1,29 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import Player from "../../pages/Player";
+import { useGameStore } from "../../store/game";
 
 export const BingoControls = () => {
-  const callBingo = () => {
-    alert("BINGO");
+  const gameSongs = useGameStore((state) => state.gameSongs);
+  const endGame = useGameStore((state) => state.endGame);
+  const [playMusic, setPlayMusic] = useState<boolean>(false);
+  const startGame = () => {
+    if (gameSongs) {
+      console.log(gameSongs);
+
+      setPlayMusic(true);
+    }
   };
-  const callLine = () => {
-    alert("LINE");
+  const callFinish = () => {
+    endGame();
   };
+
   return (
     <>
       <div className="w-1/4 border-l p-4 flex flex-col gap-4 justif-center items-center">
         <h2 className="text-xl font-semibold">Controls</h2>
-        <Player />
+        <Player playMusic={playMusic} />
         <button
           className="bg-black text-white rounded-3xl w-3/4 h-16"
-          onClick={callBingo}
+          onClick={startGame}
         >
-          BINGO
+          START
         </button>
         <button
           className="bg-black text-white rounded-3xl w-3/4 h-16"
-          onClick={callLine}
+          onClick={callFinish}
         >
-          LINE
+          FINISH
         </button>
       </div>
     </>

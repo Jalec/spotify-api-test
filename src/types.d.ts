@@ -15,4 +15,7 @@ export interface BingoSong {
   song: string;
   marked: boolean;
   trackUri: string;
+  artists: string;
 }
+
+export type GameResult = "TBD" | "LOST" | "WON";

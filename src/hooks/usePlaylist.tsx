@@ -18,6 +18,7 @@ export const usePlaylist = (playlistID: string): PlaylistReturn => {
           song: track.track.name,
           marked: false,
           trackUri: track.track.uri,
+          artists: getArtists(track.track.artists),
         };
       });
 
@@ -25,6 +26,14 @@ export const usePlaylist = (playlistID: string): PlaylistReturn => {
     };
     fetchPlaylist();
   }, [playlistID]);
+
+  const getArtists = (artists) => {
+    if (artists.length === 1) {
+      return artists[0].name;
+    } else {
+      return artists.map((artist) => artist.name).join(", ");
+    }
+  };
 
   const markSong = (index: number) => {
     setPlaylist((prevPlaylist) => {

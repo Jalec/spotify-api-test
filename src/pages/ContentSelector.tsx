@@ -1,14 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useGameStore } from "../store/game";
 
 const ContentSelector: React.FC = () => {
   const navigate = useNavigate();
+  const startGame = useGameStore((state) => state.startGame);
 
   const goToPlayer = () => {
     navigate("/player");
   };
 
   const goToBingo = () => {
+    startGame();
     navigate("/bingo");
   };
 

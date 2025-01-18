@@ -4,8 +4,10 @@ import { BingoSong } from "../types";
 import { usePlaylist } from "../hooks/usePlaylist";
 import { BingoTile } from "../components/BingoComponents/BingoTile";
 import { BingoControls } from "../components/BingoComponents/BingoControls";
+import { useGameStore } from "../store/game";
+import { Loser } from "./loser";
 
-const PLAYLIST_ID = "65PmVD0KzAxpAp2u89zGuR";
+const PLAYLIST_ID = "3IKoeFHKUdvxDKpZFZB69k";
 const BOARD_SIZE = 25;
 const GRID_SIZE = 5;
 
@@ -20,7 +22,7 @@ const containerVariants = {
   },
 };
 
-const generateRandomBoard = (
+const generateRandomSongs = (
   playlist: BingoSong[],
   count: number = BOARD_SIZE
 ): BingoSong[] => {
@@ -40,13 +42,22 @@ export const Bingo = () => {
   const { playlist, markSong } = usePlaylist(PLAYLIST_ID);
   const [board, setBoard] = useState<BingoSong[]>([]);
 
+  // Game state
+  const playing = useGameStore((state) => state.playing);
+  const gameResult = useGameStore((state) => state.gameResult);
+  const setGameSongs = useGameStore((state) => state.setGameSongs);
+  const checkSong = useGameStore((state) => state.checkSong);
+
   useEffect(() => {
     if (playlist && board.length === 0) {
-      setBoard(generateRandomBoard(playlist));
+      const randomSongs = generateRandomSongs(playlist);
+      setGameSongs(randomSongs);
+      setBoard(generateRandomSongs(randomSongs));
     }
   }, [playlist]);
 
-  const handleTileClick = (index: number) => {
+  const handleTileClick = (index: number, song: BingoSong) => {
+    checkSong(song.trackUri);
     markSong(index);
     setBoard((prevBoard) =>
       prevBoard.map((song, i) =>
@@ -64,26 +75,33 @@ export const Bingo = () => {
   }
 
   return (
-    <div className="flex-1 flex gap-4 ">
-      <main className="flex-1 flex p-8 justify-center">
-        <motion.ul
-          className={`grid w-3/4 grid-cols-5 gap-4 place-items-center`}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {board.map((track: BingoSong, index: number) => (
-            <BingoTile
-              key={`${track.song}-${index}`}
-              song={track.song}
-              marked={track.marked}
-              onClick={() => handleTileClick(index)}
-            />
-          ))}
-        </motion.ul>
-      </main>
-      <BingoControls />
-    </div>
+    <>
+      {!playing ? (
+        <>{gameResult === "LOST" ? <Loser /> : <div>loading...</div>}</>
+      ) : (
+        <div className="flex-1 flex gap-4 ">
+          <main className="flex-1 flex p-8 justify-center">
+            <motion.ul
+              className={`grid w-3/4 grid-cols-5 gap-4 place-items-center`}
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {board.map((track: BingoSong, index: number) => (
+                <BingoTile
+                  key={`${track.song}-${index}`}
+                  song={track.song}
+                  artists={track.artists}
+                  marked={track.marked}
+                  onClick={() => handleTileClick(index, track)}
+                />
+              ))}
+            </motion.ul>
+          </main>
+          <BingoControls />
+        </div>
+      )}
+    </>
   );
 };
 

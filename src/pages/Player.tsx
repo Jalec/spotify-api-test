@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from "react";
 import {
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
-import {
   getToken,
   playTrack,
   transferPlaybackToDevice,
 } from "../utils/playerUtils";
-import { usePlaylist } from "../hooks/usePlaylist";
+import { useGameStore } from "../store/game";
+import { BingoSong } from "../types";
+interface PlayerProps {
+  playMusic: boolean;
+}
 
-const PLAYLIST_ID = "65PmVD0KzAxpAp2u89zGuR";
-
-const Player: React.FC = () => {
+const Player: React.FC<PlayerProps> = ({ playMusic }) => {
   const [player, setPlayer] = useState(undefined);
-  const [isPaused, setIsPaused] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [songTracker, setSongTracker] = useState<number>(1);
 
-  const { playlist } = usePlaylist(PLAYLIST_ID);
+  // Game state
+  const gameSongs = useGameStore((state) => state.gameSongs);
+  const setCurrentSong = useGameStore((state) => state.setCurrentSong);
+  const playing = useGameStore((state) => state.playing);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -36,7 +33,7 @@ const Player: React.FC = () => {
         getOAuthToken: async (cb) => {
           try {
             const token = await getToken();
-            console.log(token);
+
             if (!token) throw new Error("Token not found in cookies");
             cb(token.token);
           } catch (error) {
@@ -61,7 +58,6 @@ const Player: React.FC = () => {
         if (!state) return;
 
         setCurrentTrack(state.track_window.current_track);
-        setIsPaused(state.paused);
       });
 
       setPlayer(spotifyPlayer);
@@ -79,59 +75,70 @@ const Player: React.FC = () => {
     };
   }, []);
 
-  const playSong = () => {
-    if (playlist) {
-      playTrack(playlist[0].trackUri);
+  useEffect(() => {
+    let isActive = true; // Flag to handle cleanup
+
+    const playSongs = async (songs: BingoSong[]) => {
+      for (let i = 0; i < songs.length; i++) {
+        // Check if we should still be playing
+        if (!isActive || !playing) {
+          break;
+        }
+
+        try {
+          setSongTracker(i + 1);
+          setCurrentSong(songs[i]);
+          await playTrack(songs[i].trackUri);
+
+          // Wait and check playing state periodically
+          for (let i = 0; i < 10; i++) {
+            if (!isActive || !playing) {
+              await player.togglePlay();
+              break;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+
+          if (isActive && playing) {
+            await player.togglePlay();
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+          }
+        } catch (error) {
+          console.error("Error playing song:", error);
+        }
+      }
+    };
+
+    if (player && playMusic && gameSongs && playing) {
+      playSongs(gameSongs);
     }
-  };
+
+    // Cleanup function
+    return () => {
+      isActive = false;
+      if (player && !playing) {
+        player.togglePlay().catch(console.error);
+      }
+    };
+  }, [player, playMusic, gameSongs, playing, setCurrentSong]);
 
   return (
     <>
       {player ? (
         <div>
-          <h2>Spotify Web Player</h2>
-          <div>
-            {currentTrack && (
-              <div>
-                <h3>Now Playing!</h3>
-                <p>
-                  {currentTrack.name} by {currentTrack.artists[0].name}
-                </p>
-              </div>
-            )}
+          {currentTrack && (
             <div>
-              <button
-                onClick={() => player.previousTrack()}
-                disabled={!currentTrack}
-              >
-                <SkipBack className="h-6 w-6" />
-              </button>
-              <button
-                onClick={() => player.togglePlay()}
-                disabled={!currentTrack}
-              >
-                {isPaused ? (
-                  <Play className="h-6 w-6" />
-                ) : (
-                  <Pause className="h-6 w-6" />
-                )}
-              </button>
-              <button
-                onClick={() => player.nextTrack()}
-                disabled={!currentTrack}
-              >
-                <SkipForward className="h-6 w-6" />
-              </button>
+              {/* <h3>Now Playing: </h3>
+              <p>
+                {currentTrack.name} by {currentTrack.artists[0].name}
+              </p> */}
             </div>
-            <div>
-              <button
-                className="bg-black text-white rounded"
-                onClick={playSong}
-              >
-                PLAY SONG!
-              </button>
-            </div>
-          </div>
+          )}
+          {playMusic && (
+            <p>
+              Song {songTracker}/{gameSongs.length}
+            </p>
+          )}
         </div>
       ) : (
         <p> Initializing player... </p>

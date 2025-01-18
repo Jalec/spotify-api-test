@@ -21,7 +21,7 @@ export async function transferPlaybackToDevice(device_id: string) {
       credentials: "include",
       body: JSON.stringify({
         device_ids: [device_id],
-        play: true,
+        play: false,
       }),
     });
   } catch (error) {

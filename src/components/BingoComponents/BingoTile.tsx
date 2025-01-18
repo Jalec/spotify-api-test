@@ -1,6 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
 
+interface BingoTileProps {
+  song: string;
+  artists: string;
+  marked: boolean;
+  onClick: () => void;
+}
+
 const springAnimation = {
   type: "spring",
   stiffness: 400,
@@ -16,7 +23,12 @@ const itemVariants = {
   },
 };
 
-export const BingoTile: React.FC = ({ song, marked, onClick }) => (
+export const BingoTile: React.FC<BingoTileProps> = ({
+  song,
+  artists,
+  marked,
+  onClick,
+}) => (
   <motion.li
     variants={itemVariants}
     className={`
@@ -36,6 +48,6 @@ export const BingoTile: React.FC = ({ song, marked, onClick }) => (
     transition={springAnimation}
     onClick={onClick}
   >
-    {song}
+    {song} - {artists}
   </motion.li>
 );
