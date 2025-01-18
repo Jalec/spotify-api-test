@@ -15,6 +15,7 @@ interface Game {
   setGameSongs: (playlist: BingoSong[]) => void;
   setCurrentSong: (song: BingoSong) => void;
   checkSong: (songId: string) => void;
+  checkWinner: () => void;
 }
 
 export const useGameStore = create<Game>((set) => {
@@ -53,6 +54,16 @@ export const useGameStore = create<Game>((set) => {
         }
         state.endGame();
         return { gameResult: "LOST" };
+      });
+    },
+
+    checkWinner: () => {
+      set((state) => {
+        if (state.markedSongs.size === state.gameSongs.length) {
+          return { playing: false, gameResult: "WON" };
+        }
+
+        return { playing: false, gameResult: "LOST" };
       });
     },
   };

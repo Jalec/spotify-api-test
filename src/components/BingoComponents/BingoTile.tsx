@@ -48,6 +48,6 @@ export const BingoTile: React.FC<BingoTileProps> = ({
     transition={springAnimation}
     onClick={onClick}
   >
-    {song} - {artists}
+    {song}
   </motion.li>
 );

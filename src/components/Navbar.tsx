@@ -18,9 +18,11 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="flex p-4 justify-between border">
-      <section>
+      <section className="flex items-center justify-center ">
         <button onClick={goHome}>
-          <h1 className="flex p-0 m-0 items-center text-2xl">MUSICAL BINGO</h1>
+          <h1 className="flex p-0 m-0 items-center justify-center text-2xl font-dynapuff">
+            BINGO BOOGIE
+          </h1>
         </button>
       </section>
       <section>

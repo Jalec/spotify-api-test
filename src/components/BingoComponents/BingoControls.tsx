@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import Player from "../../pages/Player";
 import { useGameStore } from "../../store/game";
 
-export const BingoControls = () => {
+interface BingoControlsProps {
+  checkEndGame: () => void;
+}
+
+export const BingoControls: React.FC<BingoControlsProps> = ({
+  checkEndGame,
+}) => {
   const gameSongs = useGameStore((state) => state.gameSongs);
   const endGame = useGameStore((state) => state.endGame);
   const [playMusic, setPlayMusic] = useState<boolean>(false);
@@ -21,7 +27,7 @@ export const BingoControls = () => {
     <>
       <div className="w-1/4 border-l p-4 flex flex-col gap-4 justif-center items-center">
         <h2 className="text-xl font-semibold">Controls</h2>
-        <Player playMusic={playMusic} />
+        <Player playMusic={playMusic} checkEndGame={checkEndGame} />
         <button
           className="bg-black text-white rounded-3xl w-3/4 h-16"
           onClick={startGame}

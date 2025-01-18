@@ -1,35 +1,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameStore } from "../store/game";
+import { GameSettings } from "../components/BingoComponents/GameSettings/GameSettings";
 
 const ContentSelector: React.FC = () => {
-  const navigate = useNavigate();
-  const startGame = useGameStore((state) => state.startGame);
+  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
 
-  const goToPlayer = () => {
-    navigate("/player");
-  };
-
-  const goToBingo = () => {
-    startGame();
-    navigate("/bingo");
+  const handleOpenSettings = () => {
+    setOpenSettings(!openSettings);
   };
 
   return (
     <main className="flex-1 flex items-center justify-center">
-      <div className="flex gap-3">
-        <button
-          className="rounded-xl bg-black text-white p-2"
-          onClick={goToBingo}
-        >
-          Singleplayer
-        </button>
-        <button
-          className="rounded-xl bg-black text-white p-2"
-          onClick={goToPlayer}
-        >
-          Multiplayer (Music player)
-        </button>
+      <div className="flex flex-col gap-20 justify-center items-center">
+        {openSettings ? (
+          <GameSettings handleOpenSettings={handleOpenSettings} />
+        ) : (
+          <>
+            <h1 className="text-5xl">
+              Welcome! Press the button to start playing.
+            </h1>
+            <button
+              className="rounded-xl bg-black text-white p-2 w-64"
+              onClick={handleOpenSettings}
+            >
+              PLAY
+            </button>
+          </>
+        )}
       </div>
     </main>
   );

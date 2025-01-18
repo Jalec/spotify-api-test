@@ -28,7 +28,6 @@ function App() {
             <Route path="/callback" element={<Callback />} />
             <Route element={<ProtectedRoutes />}>
               <Route path="/content" element={<ContentSelector />} />
-              <Route path="/player" element={<Player />} />
               <Route path="/bingo" element={<Bingo />} />
             </Route>
           </Routes>

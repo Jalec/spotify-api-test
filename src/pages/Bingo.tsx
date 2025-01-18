@@ -5,7 +5,8 @@ import { usePlaylist } from "../hooks/usePlaylist";
 import { BingoTile } from "../components/BingoComponents/BingoTile";
 import { BingoControls } from "../components/BingoComponents/BingoControls";
 import { useGameStore } from "../store/game";
-import { Loser } from "./loser";
+import { Loser } from "./EndGame/Loser";
+import { Winner } from "./EndGame/Winner";
 
 const PLAYLIST_ID = "3IKoeFHKUdvxDKpZFZB69k";
 const BOARD_SIZE = 25;
@@ -47,6 +48,7 @@ export const Bingo = () => {
   const gameResult = useGameStore((state) => state.gameResult);
   const setGameSongs = useGameStore((state) => state.setGameSongs);
   const checkSong = useGameStore((state) => state.checkSong);
+  const checkWinner = useGameStore((state) => state.checkWinner);
 
   useEffect(() => {
     if (playlist && board.length === 0) {
@@ -66,6 +68,10 @@ export const Bingo = () => {
     );
   };
 
+  const checkEndGame = () => {
+    checkWinner();
+  };
+
   if (!playlist) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -77,7 +83,15 @@ export const Bingo = () => {
   return (
     <>
       {!playing ? (
-        <>{gameResult === "LOST" ? <Loser /> : <div>loading...</div>}</>
+        <>
+          {gameResult === "LOST" ? (
+            <Loser />
+          ) : gameResult === "WON" ? (
+            <Winner />
+          ) : (
+            <div>loading...</div>
+          )}
+        </>
       ) : (
         <div className="flex-1 flex gap-4 ">
           <main className="flex-1 flex p-8 justify-center">
@@ -98,7 +112,7 @@ export const Bingo = () => {
               ))}
             </motion.ul>
           </main>
-          <BingoControls />
+          <BingoControls checkEndGame={checkEndGame} />
         </div>
       )}
     </>

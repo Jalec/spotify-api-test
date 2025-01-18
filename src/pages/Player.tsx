@@ -8,9 +8,10 @@ import { useGameStore } from "../store/game";
 import { BingoSong } from "../types";
 interface PlayerProps {
   playMusic: boolean;
+  checkEndGame: () => void;
 }
 
-const Player: React.FC<PlayerProps> = ({ playMusic }) => {
+const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
   const [player, setPlayer] = useState(undefined);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [songTracker, setSongTracker] = useState<number>(1);
@@ -107,6 +108,8 @@ const Player: React.FC<PlayerProps> = ({ playMusic }) => {
           console.error("Error playing song:", error);
         }
       }
+      // Once we finish all the song we check if the user won the bingo
+      checkEndGame();
     };
 
     if (player && playMusic && gameSongs && playing) {
