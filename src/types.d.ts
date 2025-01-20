@@ -19,3 +19,12 @@ export interface BingoSong {
 }
 
 export type GameResult = "TBD" | "LOST" | "WON";
+
+export interface Playlist {
+  name: string;
+  owner: string;
+  id: string;
+  type: string;
+  tracskCount: number;
+  image: string;
+}

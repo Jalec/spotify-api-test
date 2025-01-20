@@ -28,9 +28,20 @@ export async function getTopTracks() {
 
 // Get all the tracks from a playlist given its playlist ID
 export async function getPlaylistTracks(playlistID: string) {
-  // return fetchWebApi(`playlists/${playlistID}/tracks`, "GET");
   const response = await fetch(
     `${API_URL}/api/playlists/${playlistID}/tracks`,
+    {
+      credentials: "include",
+    }
+  );
+  const data = await response.json();
+  return data;
+}
+
+// Get a list of the playlists owned or followed by a Spotify user.
+export async function getAllUsersPlaylists(userID: string, offset: number = 0) {
+  const response = await fetch(
+    `${API_URL}/api/users/${userID}/playlists?limit=50&offset=${offset}`,
     {
       credentials: "include",
     }

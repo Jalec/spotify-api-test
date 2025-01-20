@@ -1,10 +1,13 @@
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameStore } from "../../../store/game";
 import { MusicTab } from "./MusicTab";
 import { GameTab } from "./GameTab";
+import { getAllUsersPlaylists } from "../../../utils/spotifyUtil";
+import { useUserDataStore } from "../../../store/userData";
+import { Playlist } from "../../../types";
 
 const allSettings = [
   { icon: "🍅", label: "Music", content: MusicTab },
@@ -24,11 +27,46 @@ export const GameSettings: React.FC<GameSettingsProps> = ({
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const navigate = useNavigate();
   const startGame = useGameStore((state) => state.startGame);
+  const userID = useUserDataStore((state) => state.userData.userID);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
 
   const goToBingo = () => {
     startGame();
     navigate("/bingo");
   };
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const data = await getAllUsersPlaylists(userID, offset);
+        const mappedPlaylists: Playlist[] = data.items.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          owner: item.owner.display_name,
+          image: item.images?.[0]?.url || "",
+          tracksCount: item.tracks.total,
+          type: item.type,
+        }));
+        setPlaylists((prev) => [...prev, ...mappedPlaylists]);
+
+        // Check if there are more playlists to fetch
+        if (mappedPlaylists.length === 50) {
+          setOffset((prev) => prev + 50);
+          setHasMore(true);
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching playlists:", error);
+      }
+    };
+
+    if (hasMore) {
+      fetchPlaylists();
+    }
+  }, [userID, hasMore, offset]);
 
   return (
     <div style={container}>
@@ -66,7 +104,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({
             transition={{ duration: 0.2 }}
             style={content}
           >
-            {selectedTab ? <selectedTab.content /> : "😋"}
+            {selectedTab ? <selectedTab.content playlists={playlists} /> : "😋"}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -106,7 +144,7 @@ const container: React.CSSProperties = {
 
 const nav: React.CSSProperties = {
   background: "#fdfdfd",
-  padding: "5px 5px 0",
+  //padding: "5px 5px 0",
   borderRadius: "10px",
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
@@ -120,6 +158,8 @@ const tabsStyles: React.CSSProperties = {
   margin: 0,
   fontWeight: 500,
   fontSize: 14,
+  display: "flex",
+  justifyContent: "center",
 };
 
 const tabsContainer: React.CSSProperties = {
@@ -130,7 +170,7 @@ const tabsContainer: React.CSSProperties = {
 
 const tab: React.CSSProperties = {
   ...tabsStyles,
-  borderRadius: 5,
+  //borderRadius: 5,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
   width: "100%",
@@ -138,9 +178,8 @@ const tab: React.CSSProperties = {
   position: "relative",
   background: "white",
   cursor: "pointer",
-  height: 24,
+  height: 43,
   display: "flex",
-  justifyContent: "space-between",
   alignItems: "center",
   flex: 1,
   minWidth: 0,
@@ -160,11 +199,13 @@ const underline: React.CSSProperties = {
 const iconContainer: React.CSSProperties = {
   display: "flex",
   justifyContent: "center",
-  alignItems: "center",
+  //alignItems: "center",
   flex: 1,
 };
 
-const content: React.CSSProperties = {};
+const content: React.CSSProperties = {
+  padding: "15px",
+};
 
 const gameButtons: React.CSSProperties = {
   display: "flex",
