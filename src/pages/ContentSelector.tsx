@@ -5,8 +5,9 @@ import { GameSettings } from "../components/BingoComponents/GameSettings/GameSet
 
 const ContentSelector: React.FC = () => {
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
-
+  const endGame = useGameStore((state) => state.endGame);
   const handleOpenSettings = () => {
+    if (openSettings) endGame();
     setOpenSettings(!openSettings);
   };
 
@@ -21,7 +22,7 @@ const ContentSelector: React.FC = () => {
               Welcome! Press the button to start playing.
             </h1>
             <button
-              className="rounded-xl bg-black text-white p-2 w-64"
+              className="bg-[#1ed760] border-b-4 border-[#58a700] text-white rounded-lg h-[50px] px-4 outline-none cursor-pointer transition-[filter,transform] active:brightness-110 active:border-b-0"
               onClick={handleOpenSettings}
             >
               PLAY

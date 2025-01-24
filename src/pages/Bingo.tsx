@@ -7,10 +7,9 @@ import { BingoControls } from "../components/BingoComponents/BingoControls";
 import { useGameStore } from "../store/game";
 import { Loser } from "./EndGame/Loser";
 import { Winner } from "./EndGame/Winner";
+import { useNavigate } from "react-router-dom";
 
-const PLAYLIST_ID = "3IKoeFHKUdvxDKpZFZB69k";
 const BOARD_SIZE = 25;
-const GRID_SIZE = 5;
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -40,8 +39,11 @@ const generateRandomSongs = (
 };
 
 export const Bingo = () => {
-  const { playlist, markSong } = usePlaylist(PLAYLIST_ID);
+  const selectedPlaylists = useGameStore((state) => state.selectedPlaylists);
+  const maxSongs = 25; // PROVISONAL HARDCODED
+  const { playlist, markSong } = usePlaylist(selectedPlaylists, maxSongs);
   const [board, setBoard] = useState<BingoSong[]>([]);
+  const navigate = useNavigate();
 
   // Game state
   const playing = useGameStore((state) => state.playing);
@@ -49,6 +51,7 @@ export const Bingo = () => {
   const setGameSongs = useGameStore((state) => state.setGameSongs);
   const checkSong = useGameStore((state) => state.checkSong);
   const checkWinner = useGameStore((state) => state.checkWinner);
+  const endGame = useGameStore((state) => state.endGame);
 
   useEffect(() => {
     if (playlist && board.length === 0) {
@@ -72,6 +75,11 @@ export const Bingo = () => {
     checkWinner();
   };
 
+  const playAgain = () => {
+    endGame();
+    navigate("/content");
+  };
+
   if (!playlist) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -85,9 +93,9 @@ export const Bingo = () => {
       {!playing ? (
         <>
           {gameResult === "LOST" ? (
-            <Loser />
+            <Loser playAgain={playAgain} />
           ) : gameResult === "WON" ? (
-            <Winner />
+            <Winner playAgain={playAgain} />
           ) : (
             <div>loading...</div>
           )}

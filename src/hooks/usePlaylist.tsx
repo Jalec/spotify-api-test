@@ -1,31 +1,35 @@
 import { useState, useEffect } from "react";
-import { BingoSong } from "../types";
-import { getPlaylistTracks } from "../utils/spotifyUtil";
+import { BingoSong, Playlist } from "../types";
+import { getRandomPlaylist } from "../utils/spotifyUtil";
 
 interface PlaylistReturn {
   playlist: null | BingoSong[];
   markSong: (index: number) => void;
 }
 
-export const usePlaylist = (playlistID: string): PlaylistReturn => {
+export const usePlaylist = (
+  playlists: Set<Playlist>,
+  maxSongs: number
+): PlaylistReturn => {
   const [playlist, setPlaylist] = useState<null | BingoSong[]>(null);
-
   useEffect(() => {
-    const fetchPlaylist = async () => {
-      const playlist = await getPlaylistTracks(playlistID);
-      const playlistSongs = playlist.items.map((track) => {
+    const fetchRandomPlaylist = async () => {
+      console.log(playlists);
+
+      const data = await getRandomPlaylist(playlists, maxSongs);
+      const formatPlaylist = data.map((song) => {
         return {
-          song: track.track.name,
+          song: song.track.name,
           marked: false,
-          trackUri: track.track.uri,
-          artists: getArtists(track.track.artists),
+          trackUri: song.track.uri,
+          artists: getArtists(song.track.artists),
         };
       });
-
-      setPlaylist(playlistSongs.sort(() => Math.random() - 0.5));
+      console.log(formatPlaylist);
+      setPlaylist(formatPlaylist);
     };
-    fetchPlaylist();
-  }, [playlistID]);
+    fetchRandomPlaylist();
+  }, [playlists, maxSongs]);
 
   const getArtists = (artists) => {
     if (artists.length === 1) {
@@ -34,7 +38,6 @@ export const usePlaylist = (playlistID: string): PlaylistReturn => {
       return artists.map((artist) => artist.name).join(", ");
     }
   };
-
   const markSong = (index: number) => {
     setPlaylist((prevPlaylist) => {
       if (!prevPlaylist) return null;

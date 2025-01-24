@@ -11,11 +11,10 @@ export const BingoControls: React.FC<BingoControlsProps> = ({
 }) => {
   const gameSongs = useGameStore((state) => state.gameSongs);
   const endGame = useGameStore((state) => state.endGame);
+  const selectedPlaylists = useGameStore((state) => state.selectedPlaylists);
   const [playMusic, setPlayMusic] = useState<boolean>(false);
   const startGame = () => {
     if (gameSongs) {
-      console.log(gameSongs);
-
       setPlayMusic(true);
     }
   };
@@ -40,6 +39,14 @@ export const BingoControls: React.FC<BingoControlsProps> = ({
         >
           FINISH
         </button>
+        <section>
+          <h1>Your playlist selection: </h1>
+          <ul>
+            {Array.from(selectedPlaylists).map((playlist, index) => (
+              <li key={index}>{playlist.name}</li>
+            ))}
+          </ul>
+        </section>
       </div>
     </>
   );

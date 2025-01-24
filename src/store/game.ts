@@ -1,8 +1,9 @@
 import { create } from "zustand";
-import { BingoSong, GameResult } from "../types";
+import { BingoSong, GameResult, Playlist } from "../types";
 
 interface Game {
   playing: boolean;
+  selectedPlaylists: Set<Playlist>;
   gameSongs: BingoSong[];
   playerBoard: string[];
   markedSongs: Set<string>;
@@ -12,6 +13,7 @@ interface Game {
 
   startGame: () => void;
   endGame: () => void;
+  handleSelection: (playlist: Playlist) => void;
   setGameSongs: (playlist: BingoSong[]) => void;
   setCurrentSong: (song: BingoSong) => void;
   checkSong: (songId: string) => void;
@@ -21,6 +23,7 @@ interface Game {
 export const useGameStore = create<Game>((set) => {
   return {
     playing: false,
+    selectedPlaylists: new Set(),
     gameSongs: null,
     playerBoard: [],
     markedSongs: new Set(),
@@ -33,7 +36,19 @@ export const useGameStore = create<Game>((set) => {
     },
 
     endGame: () => {
-      set({ playing: false });
+      set({ playing: false, selectedPlaylists: new Set() });
+    },
+
+    handleSelection: (playlist: Playlist) => {
+      set((state) => {
+        const updatedSet = new Set(state.selectedPlaylists);
+        if (updatedSet.has(playlist)) {
+          updatedSet.delete(playlist); // Remove the playlist if it's already selected
+        } else {
+          updatedSet.add(playlist); // Add the playlist if it's not selected
+        }
+        return { selectedPlaylists: updatedSet };
+      });
     },
 
     setGameSongs: (playlist: BingoSong[]) => {

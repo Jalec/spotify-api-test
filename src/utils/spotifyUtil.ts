@@ -1,3 +1,5 @@
+import { Playlist } from "../types";
+
 const API_URL = "http://localhost:5000";
 
 export function redirectToSpotifyAuth() {
@@ -46,6 +48,27 @@ export async function getAllUsersPlaylists(userID: string, offset: number = 0) {
       credentials: "include",
     }
   );
+  const data = await response.json();
+  return data;
+}
+
+export async function getRandomPlaylist(
+  playlists: Set<Playlist>,
+  maxSongs: number
+) {
+  const options = {
+    playlists: Array.from(playlists),
+    maxSongs: maxSongs,
+  };
+  const response = await fetch(`${API_URL}/api/getRandomPlaylist`, {
+    method: "POST",
+    body: JSON.stringify(options),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
   const data = await response.json();
   return data;
 }

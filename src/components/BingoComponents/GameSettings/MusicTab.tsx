@@ -1,28 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Playlist } from "../../../types";
+import { useGameStore } from "../../../store/game";
 
 interface MusicTabProps {
   playlists: Playlist[];
 }
 
 export const MusicTab: React.FC<MusicTabProps> = ({ playlists }) => {
-  const [selectedPlaylists, setSelectedPlaylists] = useState<Set<Playlist>>(
-    new Set()
-  );
-
-  const handleSelection = (playlist: Playlist) => {
-    setSelectedPlaylists((prevSelected) => {
-      const updatedSet = new Set(prevSelected); // Clone the current Set
-
-      if (updatedSet.has(playlist)) {
-        updatedSet.delete(playlist); // Remove the playlist if it's already selected
-      } else {
-        updatedSet.add(playlist); // Add the playlist if it's not selected
-      }
-
-      return updatedSet; // Return the new Set
-    });
-  };
+  const selectedPlaylists = useGameStore((state) => state.selectedPlaylists);
+  const handleSelection = useGameStore((state) => state.handleSelection);
 
   return (
     <>

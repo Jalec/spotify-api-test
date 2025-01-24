@@ -1,11 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
-export const Loser = () => {
-  const navigate = useNavigate();
-  const playAgain = () => {
-    navigate("/content");
-  };
+interface LoserProps {
+  playAgain: () => void;
+}
+
+export const Loser: React.FC<LoserProps> = ({ playAgain }) => {
   return (
     <div className="flex flex-col justify-center items-center gap-12">
       <h1 className="text-5xl">YOU LOST!</h1>
