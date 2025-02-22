@@ -22,7 +22,7 @@ const ContentSelector: React.FC = () => {
               Welcome! Press the button to start playing.
             </h1>
             <button
-              className="bg-[#1ed760] border-b-4 border-[#58a700] text-white rounded-lg h-[50px] px-4 outline-none cursor-pointer transition-[filter,transform] active:brightness-110 active:border-b-0"
+              className="bg-[#1ed760] border-b-4 border-[#58a700] text-white text-5xl rounded-lg h-[100px] w-[200px] px-4 outline-none cursor-pointer transition-[filter,transform] active:brightness-110 active:border-b-0"
               onClick={handleOpenSettings}
             >
               PLAY

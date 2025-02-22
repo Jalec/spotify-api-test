@@ -20,6 +20,7 @@ const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
   const gameSongs = useGameStore((state) => state.gameSongs);
   const setCurrentSong = useGameStore((state) => state.setCurrentSong);
   const playing = useGameStore((state) => state.playing);
+  const timePerSong = useGameStore((state) => state.gameSettings.timePerSong);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -30,7 +31,7 @@ const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
 
     window.onSpotifyWebPlaybackSDKReady = () => {
       const spotifyPlayer = new window.Spotify.Player({
-        name: "Jordi Music Player",
+        name: "BingoBoogie Music Player",
         getOAuthToken: async (cb) => {
           try {
             const token = await getToken();
@@ -57,6 +58,7 @@ const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
 
       spotifyPlayer.addListener("player_state_changed", (state) => {
         if (!state) return;
+        console.log(state.track_window.current_track);
 
         setCurrentTrack(state.track_window.current_track);
       });
@@ -80,6 +82,7 @@ const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
     let isActive = true; // Flag to handle cleanup
 
     const playSongs = async (songs: BingoSong[]) => {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       for (let i = 0; i < songs.length; i++) {
         // Check if we should still be playing
         if (!isActive || !playing) {
@@ -92,16 +95,16 @@ const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
           await playTrack(songs[i].trackUri);
 
           // Wait and check playing state periodically
-          for (let i = 0; i < 10; i++) {
+          for (let i = 0; i < timePerSong; i++) {
             if (!isActive || !playing) {
-              await player.togglePlay();
+              await player.pause();
               break;
             }
             await new Promise((resolve) => setTimeout(resolve, 1000));
           }
 
           if (isActive && playing) {
-            await player.togglePlay();
+            await player.pause();
             await new Promise((resolve) => setTimeout(resolve, 5000));
           }
         } catch (error) {
@@ -120,7 +123,8 @@ const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
     return () => {
       isActive = false;
       if (player && !playing) {
-        player.togglePlay().catch(console.error);
+        player.pause().catch(console.error);
+        player.disconnect();
       }
     };
   }, [player, playMusic, gameSongs, playing, setCurrentSong]);
@@ -129,14 +133,6 @@ const Player: React.FC<PlayerProps> = ({ playMusic, checkEndGame }) => {
     <>
       {player ? (
         <div>
-          {currentTrack && (
-            <div>
-              {/* <h3>Now Playing: </h3>
-              <p>
-                {currentTrack.name} by {currentTrack.artists[0].name}
-              </p> */}
-            </div>
-          )}
           {playMusic && (
             <p>
               Song {songTracker}/{gameSongs.length}

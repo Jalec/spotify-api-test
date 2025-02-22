@@ -40,7 +40,7 @@ const generateRandomSongs = (
 
 export const Bingo = () => {
   const selectedPlaylists = useGameStore((state) => state.selectedPlaylists);
-  const maxSongs = 25; // PROVISONAL HARDCODED
+  const maxSongs = useGameStore((state) => state.gameSettings.maxSongs);
   const { playlist, markSong } = usePlaylist(selectedPlaylists, maxSongs);
   const [board, setBoard] = useState<BingoSong[]>([]);
   const navigate = useNavigate();

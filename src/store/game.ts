@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { BingoSong, GameResult, Playlist } from "../types";
+import { BingoSong, GameResult, GameSettings, Playlist } from "../types";
 
 interface Game {
   playing: boolean;
@@ -10,6 +10,7 @@ interface Game {
   playedSongs: Set<string>;
   currentSong: string;
   gameResult: GameResult;
+  gameSettings: GameSettings;
 
   startGame: () => void;
   endGame: () => void;
@@ -18,6 +19,8 @@ interface Game {
   setCurrentSong: (song: BingoSong) => void;
   checkSong: (songId: string) => void;
   checkWinner: () => void;
+  setMaxSongs: (key: string, maxSongs: string) => void;
+  setTimePerSong: (key: string, timePerSong: number) => void;
 }
 
 export const useGameStore = create<Game>((set) => {
@@ -30,6 +33,10 @@ export const useGameStore = create<Game>((set) => {
     playedSongs: new Set(),
     currentSong: "",
     gameResult: "TBD",
+    gameSettings: {
+      maxSongs: 25,
+      timePerSong: 10,
+    },
 
     startGame: () => {
       set({ playing: true });
@@ -80,6 +87,24 @@ export const useGameStore = create<Game>((set) => {
 
         return { playing: false, gameResult: "LOST" };
       });
+    },
+
+    setMaxSongs: (key: string, maxSongs: number) => {
+      set((state) => ({
+        gameSettings: {
+          ...state.gameSettings,
+          [key]: maxSongs,
+        },
+      }));
+    },
+
+    setTimePerSong: (key: string, timePerSong: number) => {
+      set((state) => ({
+        gameSettings: {
+          ...state.gameSettings,
+          [key]: timePerSong,
+        },
+      }));
     },
   };
 });

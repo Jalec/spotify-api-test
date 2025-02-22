@@ -14,8 +14,6 @@ export const usePlaylist = (
   const [playlist, setPlaylist] = useState<null | BingoSong[]>(null);
   useEffect(() => {
     const fetchRandomPlaylist = async () => {
-      console.log(playlists);
-
       const data = await getRandomPlaylist(playlists, maxSongs);
       const formatPlaylist = data.map((song) => {
         return {
@@ -25,7 +23,7 @@ export const usePlaylist = (
           artists: getArtists(song.track.artists),
         };
       });
-      console.log(formatPlaylist);
+
       setPlaylist(formatPlaylist);
     };
     fetchRandomPlaylist();

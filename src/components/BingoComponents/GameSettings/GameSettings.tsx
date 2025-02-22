@@ -8,10 +8,11 @@ import { GameTab } from "./GameTab";
 import { getAllUsersPlaylists } from "../../../utils/spotifyUtil";
 import { useUserDataStore } from "../../../store/userData";
 import { Playlist } from "../../../types";
+import { MusicIcon, Gamepad } from "lucide-react";
 
 const allSettings = [
-  { icon: "🍅", label: "Music", content: MusicTab },
-  { icon: "🥬", label: "Game", content: GameTab },
+  { icon: <MusicIcon size={18} />, label: "Music", content: MusicTab },
+  { icon: <Gamepad size={18} />, label: "Game", content: GameTab },
 ];
 
 const [Music, Board] = allSettings;
@@ -27,12 +28,18 @@ export const GameSettings: React.FC<GameSettingsProps> = ({
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const navigate = useNavigate();
   const startGame = useGameStore((state) => state.startGame);
+  const selectedPlaylists = useGameStore((state) => state.selectedPlaylists);
   const userID = useUserDataStore((state) => state.userData.userID);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
 
   const goToBingo = () => {
+    if (selectedPlaylists.size === 0) {
+      alert("You need to add at least 1 playlist to start a game!");
+      return;
+    }
+
     startGame();
     navigate("/bingo");
   };
@@ -41,7 +48,7 @@ export const GameSettings: React.FC<GameSettingsProps> = ({
     const fetchPlaylists = async () => {
       try {
         const data = await getAllUsersPlaylists(userID, offset);
-        const mappedPlaylists: Playlist[] = data.items.map((item: any) => ({
+        const mappedPlaylists: Playlist[] = data.items.map((item) => ({
           id: item.id,
           name: item.name,
           owner: item.owner.display_name,
@@ -82,7 +89,10 @@ export const GameSettings: React.FC<GameSettingsProps> = ({
               style={tab}
               onClick={() => setSelectedTab(item)}
             >
-              {`${item.icon} ${item.label}`}
+              <div className="flex gap-2 items-end">
+                {item.icon}
+                {item.label}
+              </div>
               {item === selectedTab ? (
                 <motion.div
                   style={underline}

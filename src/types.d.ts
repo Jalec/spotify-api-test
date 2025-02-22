@@ -28,3 +28,8 @@ export interface Playlist {
   tracskCount: number;
   image: string;
 }
+
+export interface GameSettings {
+  maxSongs: number;
+  timePerSong: number;
+}
