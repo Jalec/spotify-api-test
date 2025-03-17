@@ -93,6 +93,7 @@ export const peepStanding1 = () => {
           height="269px"
           viewBox="0 0 340 469"
           version="1.1"
+          className="hidden xl:block xl:left-30"
         >
           <title>peep-sitting-5</title>
           <desc>Created with Sketch.</desc>

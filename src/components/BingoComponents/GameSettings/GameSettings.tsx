@@ -222,6 +222,6 @@ const gameButtons: React.CSSProperties = {
   justifyContent: "center",
   alignItems: "center",
   gap: 90,
-  borderTop: "1px solid #eeeeee",
+  // borderTop: "1px solid #eeeeee",
   height: 50,
 };

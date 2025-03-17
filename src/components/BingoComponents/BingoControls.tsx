@@ -27,18 +27,22 @@ export const BingoControls: React.FC<BingoControlsProps> = ({
       <div className="w-1/4 border-l p-4 flex flex-col gap-4 justif-center items-center">
         <h2 className="text-xl font-semibold">Controls</h2>
         <Player playMusic={playMusic} checkEndGame={checkEndGame} />
-        <button
-          className="bg-black text-white rounded-3xl w-3/4 h-16"
-          onClick={startGame}
-        >
-          START
-        </button>
-        <button
-          className="bg-black text-white rounded-3xl w-3/4 h-16"
-          onClick={callFinish}
-        >
-          FINISH
-        </button>
+        {!playMusic && (
+          <button
+            className="bg-black text-white rounded-3xl w-3/4 h-16"
+            onClick={startGame}
+          >
+            START
+          </button>
+        )}
+        {playMusic && (
+          <button
+            className="bg-black text-white rounded-3xl w-3/4 h-16"
+            onClick={callFinish}
+          >
+            FINISH
+          </button>
+        )}
         <section>
           <h1>Your playlist selection: </h1>
           <ul>

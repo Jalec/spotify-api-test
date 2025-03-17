@@ -17,12 +17,16 @@ const ContentSelector: React.FC = () => {
       {openSettings ? (
         <>
           <div className="w-full">
-            <div className="fixed left-44 top-72 z-10">{peepStanding1()}</div>
+            <div className="fixed z-10 hidden md:block 2xl:left-24 2xl:top-72 xl:top-64 xl:left-12 lg:left-20 lg:top-52 lg:w-1/4 md:left-20">
+              {peepStanding1()}
+            </div>
             <div className="relative flex justify-center items-center z-10">
               <GameSettings handleOpenSettings={handleOpenSettings} />
             </div>
-            <div className="fixed right-44 top-1/4 z-10">{peepBycicle1()}</div>
-            <div className="fixed bottom-52">
+            <div className="fixed z-10 hidden xl:block 2xl:right-44 2xl:top-64 xl:right-8 xl:top-52">
+              {peepBycicle1()}
+            </div>
+            <div className="fixed hidden md:block 2xl:bottom-52 xl:bottom-30 lg:bottom-40 md:bottom-52">
               <svg
                 width="100%"
                 height="100"
@@ -40,7 +44,7 @@ const ContentSelector: React.FC = () => {
                 />
               </svg>
             </div>
-            <div className="fixed top-20 left-1/4">
+            <div className="fixed hidden md:block 2xl:top-20 2xl:left-1/4 xl:top-20 xl:left-72 lg:top-20 lg:left-64 md:top-20 left-72 ">
               <svg
                 width="200"
                 height="100"
@@ -62,7 +66,7 @@ const ContentSelector: React.FC = () => {
                 />
               </svg>
             </div>
-            <div className="fixed top-52 right-1/4">
+            <div className="fixed hidden lg:block 2xl:top-52 2xl:right-1/4 xl:top-52 xl:right-52 lg:top-52 lg:right-32">
               <svg
                 width="200"
                 height="100"

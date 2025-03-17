@@ -43,7 +43,7 @@ export const useGameStore = create<Game>((set) => {
     },
 
     endGame: () => {
-      set({ playing: false, selectedPlaylists: new Set() });
+      set({ playing: false, selectedPlaylists: new Set(), currentSong: "" });
     },
 
     handleSelection: (playlist: Playlist) => {

@@ -20,7 +20,7 @@ export const MusicTab: React.FC<MusicTabProps> = ({ playlists }) => {
           {/* <p>Up to 5.</p> */}
         </div>
 
-        <div className="flex p-4 overflow-y-scroll h-96 border rounded-lg ">
+        <div className="flex p-4 overflow-y-scroll border rounded-lg xl:h-72 sm:h-64 h-52">
           <ul className="space-y-2">
             {playlists.map((playlist) => (
               <li
